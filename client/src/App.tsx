@@ -1,21 +1,23 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { FunctionComponent, Suspense } from 'react';
 
-const App = () => {
-    const [ user, setUser ] = useState<any>();
-    useEffect(() => {
-        axios.post('/api/users/add', { name: 'Mik' })
-            .then(response => {
-                console.log(response.data);
-                setUser(response.data);
-            });
-    }, []);
-    return (
-        <div>
-          Hello
-            {user}
-        </div>
-    );
-};
+import { CookiesProvider } from 'react-cookie';
+
+import { Provider as ReduxProvider } from 'react-redux';
+
+import StylesProvider from '@providers/Styles.provider';
+import store from '@redux/store';
+import ExternalRouter from '@routes/ExternalRouter';
+
+const App: FunctionComponent = () => (
+    <ReduxProvider store={store}>
+        <CookiesProvider >
+            <StylesProvider>
+                <Suspense fallback={false}>
+                    <ExternalRouter />
+                </Suspense>
+            </StylesProvider>
+        </CookiesProvider>
+    </ReduxProvider>
+);
 
 export default App;

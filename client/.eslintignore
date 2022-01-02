@@ -1,0 +1,6 @@
+dist
+node_modules
+
+*.js
+*.jsx
+webpack.config.babel.ts

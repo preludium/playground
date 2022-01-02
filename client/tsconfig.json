@@ -1,26 +1,35 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
-  },
-  "include": [
-    "src"
-  ]
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "baseUrl": "src",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "outDir": "dist",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "jsx": "react-jsx",
+        "paths": {
+            "@api/*": ["api/*"],
+            "@components/*": ["components/*"],
+            "@hooks/*": ["hooks/*"],
+            "@pages/*": ["pages/*"],
+            "@providers/*": ["providers/*"],
+            "@redux/*": ["redux/*"],
+            "@routes/*": ["routes/*"],
+            "@styles/*": ["styles/*"],
+            "@utils/*": ["utils/*"],
+            "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
+        }
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
 }
