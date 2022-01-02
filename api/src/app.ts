@@ -33,15 +33,15 @@ class App {
         this.express.use(cookieParser());
         this.express.use(morgan('[:date[web]] :remote-addr :url :method', { immediate: true }));
         this.express.use(express.json());
-        this.express.use(express.urlencoded({ extended: false }));
+        this.express.use(express.urlencoded({ extended: true }));
         this.express.use(compression());
     }
 
     private initialiseControllers(controllers: Controller[]) {
-        const authController = new AuthController();
-        this.express.use('', authController.router);
+        const unprotectedController = new AuthController();
+        this.express.use('/api', unprotectedController.router);
         controllers.forEach((controller: Controller) => {
-            this.express.use('/api', controller.router);
+            this.express.use('/api', unprotectedController.authenticate.bind(this), controller.router);
         });
     }
 

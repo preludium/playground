@@ -1,20 +1,17 @@
-import { NextFunction, Router } from 'express';
-import StatusCodes from 'http-status-codes';
-
 import { UserResponse } from '@entities/user';
 
 import { updateUserSchema } from '@entities/user/validation';
 import UserService from '@service/user';
-import { paramMissingError, wrongId } from '@utils/constants';
+import { wrongId } from '@utils/constants';
 import HttpException from '@utils/exceptions/http.exception';
 import { isMongoId } from '@utils/functions';
 import Logger from '@utils/logger';
 import { validateRequestMiddleware } from '@utils/middlewares';
-import { Controller, ApiResponse } from '@utils/types/controller';
+import { ApiResponse, Controller } from '@utils/types/controller';
+import { NextFunction, Router } from 'express';
+import StatusCodes from 'http-status-codes';
 
-import {
-    DeleteUserRequest, GetUserRequest, UpdateUserRequest
-} from './types';
+import { DeleteUserRequest, GetUserRequest, UpdateUserRequest } from './types';
 
 class UserController implements Controller {
     public readonly path = '/users';
@@ -23,10 +20,15 @@ class UserController implements Controller {
     private userService = new UserService();
 
     constructor() {
-        this.initialiseRoutes();
+        this.initializeRoutes();
     }
 
-    private initialiseRoutes() {
+    private initializeRoutes() {
+        this.router.get(
+            `${this.path}-current`,
+            this.getCurrentUser.bind(this)
+        );
+        
         this.router.get(
             this.path,
             this.getAllUsers.bind(this)
@@ -47,6 +49,13 @@ class UserController implements Controller {
             `${this.path}/:userId`,
             this.deleteUser.bind(this)
         );
+    }
+    
+    private getCurrentUser(_, res: ApiResponse<UserResponse>) {
+        const currentUser = res.locals.user;
+        this.logger.info(`==> Fetching user ${currentUser.email} details`);
+        
+        res.json(currentUser).end();
     }
 
     private getAllUsers(_, res: ApiResponse<UserResponse[]>, next: NextFunction) {
@@ -87,11 +96,7 @@ class UserController implements Controller {
             return next(new HttpException(StatusCodes.BAD_REQUEST, wrongId));
         }
 
-        if (!user) {
-            return next(new HttpException(StatusCodes.BAD_REQUEST, paramMissingError));
-        }
-
-        return this.userService.updateById(userId, user)
+        this.userService.updateById(userId, user)
             .then(updatedUser => {
                 this.logger.info(`<== Success: user ${updatedUser?._id} updated`);
                 res.json(updatedUser);

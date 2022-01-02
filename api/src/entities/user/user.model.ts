@@ -1,14 +1,15 @@
-import bcrypt from 'bcrypt';
-import { Model, model, Schema } from 'mongoose';
-
 import config from '@config';
 import Logger from '@utils/logger';
+import bcrypt from 'bcrypt';
+import { Model, model, Schema } from 'mongoose';
+import TodoModel from '../todo';
+import TokenModel, { tokenSchema } from '../token/token.model';
 
 import { User } from './user.types';
 
 const logger = Logger.create(__filename);
 
-const userSchema: Schema = new Schema({
+const userSchema: Schema<User> = new Schema({
     email: {
         type: String,
         required: true,
@@ -21,6 +22,9 @@ const userSchema: Schema = new Schema({
     roles: {
         type: [String],
         required: true
+    },
+    refreshToken: {
+        type: tokenSchema
     }
 }, {
     timestamps: true,
@@ -45,6 +49,15 @@ userSchema.pre('save', async function (next) {
     user.password = bcrypt.hashSync(user.password, salt);
     return next();
 });
+
+userSchema.pre('remove', async function (next) {
+    const user = this as User;
+    await Promise.all([
+        TokenModel.remove({ userId: user._id }).exec(),
+        TodoModel.remove({ userId: user._id }).exec()
+    ]);
+    next();
+})
 
 userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
     const user = this as User;

@@ -1,4 +1,4 @@
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 export interface Token extends Document {
     userId: string;

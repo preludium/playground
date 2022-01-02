@@ -1,7 +1,3 @@
-import dayjs from 'dayjs';
-import { NextFunction, Router } from 'express';
-import StatusCodes from 'http-status-codes';
-
 import {
     loginUserSchema,
     registerUserSchema,
@@ -12,25 +8,26 @@ import TokenService from '@service/token/token.service';
 import HttpException from '@utils/exceptions/http.exception';
 import Logger from '@utils/logger';
 import { validateRequestMiddleware } from '@utils/middlewares';
-import { Controller, Response, Request, ApiResponse } from '@utils/types/controller';
+import { ApiResponse, Controller, Request, Response } from '@utils/types/controller';
 import { TokenBundle } from '@utils/types/token';
+import dayjs from 'dayjs';
+import { NextFunction, Router } from 'express';
+import StatusCodes from 'http-status-codes';
 
 import { LoginUserRequest, RegisterUserRequest } from './types';
 
 class AuthController implements Controller {
-    public readonly path = '';
+    public readonly path = '/auth';
     public readonly router = Router();
     private logger = Logger.create(__filename);
     private authService = new AuthService();
     private tokenService = new TokenService();
 
     constructor() {
-        this.initialiseRoutes();
+        this.initializeRoutes();
     }
 
-    private initialiseRoutes() {
-        this.router.use('/api', this.authenticate.bind(this));
-
+    private initializeRoutes() {
         this.router.post(
             `${this.path}/login`,
             validateRequestMiddleware(loginUserSchema),
@@ -54,7 +51,7 @@ class AuthController implements Controller {
         );
     }
 
-    private authenticate(req: Request, res: Response, next: NextFunction) {
+    public authenticate(req: Request, res: Response, next: NextFunction) {
         this.logger.info('Trying to authenticate user with access-token');
 
         const token = req.cookies.access_token;
@@ -63,7 +60,7 @@ class AuthController implements Controller {
             return res.status(StatusCodes.UNAUTHORIZED).end();
         }
 
-        return this.authService.handleAuthenticate(token)
+        return new AuthService().handleAuthenticate(token)
             .then(requester => {
                 res.locals.user = requester;
                 this.logger.info(`User ${requester.email} successfully authenticated`);
@@ -137,9 +134,10 @@ class AuthController implements Controller {
     private async refreshToken(req: Request, res: Response) {
         this.logger.info('Trying to refresh tokens');
         const requestRefreshToken = req.cookies.refresh_token;
+
         if (!requestRefreshToken) {
             this.logger.error('Token is empty');
-            return res.status(StatusCodes.UNAUTHORIZED).end();
+            return res.status(StatusCodes.FORBIDDEN).end();
         }
 
         if (!await this.tokenService.doesTokenExist(requestRefreshToken)) {
@@ -162,7 +160,7 @@ class AuthController implements Controller {
             .cookie('access_token', accessToken, {
                 httpOnly: true,
                 expires: dayjs()
-                    .add(15, 'm')
+                    .add(15, 's')
                     .toDate()
             })
             .cookie('refresh_token', refreshToken, {

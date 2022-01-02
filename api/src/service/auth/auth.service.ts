@@ -1,18 +1,17 @@
-import { DocumentDefinition } from 'mongoose';
-
 import { LoginUserRequestBody } from '@controller/auth/types';
 import UserModel, { User, UserRequest, UserResponse } from '@entities/user';
 import { Roles } from '@utils/constants';
 import Logger from '@utils/logger';
 import { verifyToken } from '@utils/middlewares';
 import { TokenBundle } from '@utils/types/token';
+import { DocumentDefinition } from 'mongoose';
 
 import TokenService from '../token/token.service';
 
 class AuthService {
     private users = UserModel;
-    private tokenService = new TokenService();
     private logger = Logger.create(__filename);
+    private tokenService = new TokenService();
 
     public async processLogin({
         email, password

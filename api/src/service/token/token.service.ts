@@ -1,10 +1,9 @@
-import dayjs from 'dayjs';
-
 import TokenModel, { Token } from '@entities/token';
 import { User } from '@entities/user';
 import Logger from '@utils/logger';
 import { signToken, verifyToken } from '@utils/middlewares';
 import { TokenBundle } from '@utils/types/token';
+import dayjs from 'dayjs';
 
 import UserService from '../user';
 

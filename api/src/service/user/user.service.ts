@@ -3,10 +3,7 @@ import { wrongId } from '@utils/constants';
 
 class UserService {
     public getAllUsers(): Promise<User[]> {
-        return UserModel.find({})
-            .catch(error => {
-                throw new Error(error.message);
-            });
+        return UserModel.find({}).exec();
     }
 
     public getUserById(userId: string): Promise<User> {
@@ -16,9 +13,6 @@ class UserService {
                     throw new Error(wrongId);
                 }
                 return user;
-            })
-            .catch(error => {
-                throw new Error(error.message);
             });
     }
 
@@ -39,10 +33,7 @@ class UserService {
     }
 
     public deleteById(userId: string) {
-        return UserModel.deleteOne({ _id: userId })
-            .catch(error => {
-                throw new Error(error.message);
-            });
+        return UserModel.deleteOne({ _id: userId }).exec();
     }
 }
 

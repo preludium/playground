@@ -1,12 +1,11 @@
-import { Model, model, Schema } from 'mongoose';
-
 import Logger from '@utils/logger';
+import { Model, model, Schema } from 'mongoose';
 
 import { Token } from './token.types';
 
 const logger = Logger.create(__filename);
 
-const tokenSchema: Schema<Token> = new Schema({
+export const tokenSchema: Schema<Token> = new Schema({
     userId: {
         type: String,
         required: true,
