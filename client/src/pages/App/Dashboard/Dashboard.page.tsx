@@ -1,41 +1,68 @@
-import { Typography } from '@mui/material';
+import { FunctionComponent, useEffect, useMemo } from 'react';
 
-import { FunctionComponent } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useImmer } from 'use-immer';
 
 import useTodoApi from '@api/Todo';
-import { Todo, TodoTypes } from '@utils/types';
+import { Todo, TodoDnD, TodoTypes } from '@utils/types';
 
-import { Column, Item, Title, Wrapper } from './Dashboard.styles';
+import { Wrapper } from './Dashboard.styles';
+import { TodoMap } from './Dashboard.types';
+import { mapTodosIntoMap } from './Dashboard.utils';
+import TodoContainer from './TodoContainer';
+
+const getKey = (type: string) => `${type.toLowerCase().replace('_', '-')}-column`;
 
 const Dashboard: FunctionComponent = () => {
-    const { getAll } = useTodoApi();
+    const { getAll, updateAll } = useTodoApi();
     const { data } = useQuery('todos', getAll);
+    const queryClient = useQueryClient();
+    const { mutate } = useMutation(updateAll, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('todos');
+        },
+    });
+    const [ todos, setTodos ] = useImmer<Todo[]>([]);
 
-    const todo = data?.filter(item => item.type === TodoTypes.TODO) ?? [];
-    const inProgress = data?.filter(item => item.type === TodoTypes.IN_PROGRESS) ?? [];
-    const done = data?.filter(item => item.type === TodoTypes.DONE) ?? [];
+    useEffect(() => {
+        if (!data) return;
+        setTodos(data);
+    }, [data]);
 
-    const mapElements = (list: Todo[]) => list.map(item => (
-        <Item>
-            <Typography variant={'h6'}>{item.name}</Typography>
-        </Item>
-    ));
+    const todosMap = useMemo<TodoMap>(() => mapTodosIntoMap(todos), [todos]);
+
+    const handleDrop = (dropTodo: TodoDnD, type: TodoTypes) => {
+        const todosToUpdate = todosMap[dropTodo.type].data.reduce<(Todo | TodoDnD)[]>((acc, todo) => {
+            if (todo.order > dropTodo.order) {
+                return [ ...acc, { ...todo, order: todo.order - 1 } ];
+            }
+            if (todo.id === dropTodo.id) {
+                return [ ...acc, { ...dropTodo, type, order: todosMap[type].lastOrder + 1 } ];
+            }
+            return acc;
+        }, []);
+        if (!todosToUpdate.length) return;
+        mutate(todosToUpdate);
+        setTodos(draft => {
+            const wantedTodo = draft.find(todo => todo.id === dropTodo.id);
+            if (!wantedTodo) return;
+            wantedTodo.type = type;
+            wantedTodo.order = todosMap[type].lastOrder + 1;
+        });
+    };
+
+    const renderTodos = () => Object.values(TodoTypes)
+        .map(type => (
+            <TodoContainer key={getKey(type)}
+                type={type}
+                todos={todosMap[type].data}
+                onDrop={handleDrop}
+            />
+        ));
 
     return (
         <Wrapper>
-            <Column>
-                <Title>TODO</Title>
-                {mapElements(todo)}
-            </Column>
-            <Column>
-                <Title>IN PROGRESS</Title>
-                {mapElements(inProgress)}
-            </Column>
-            <Column>
-                <Title>DONE</Title>
-                {mapElements(done)}
-            </Column>
+            {renderTodos()}
         </Wrapper>
     );
 };

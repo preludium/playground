@@ -27,10 +27,12 @@ export const Title = styled.div`
     padding-bottom: ${rem(20)};
 `;
 
-export const Item = styled.div`
+export const Item = styled.div<{ isDragging: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: move;
+    opacity: ${p => p.isDragging ? 0 : 1};
     
     width: 100%;
     background-color: ${p => p.theme.palette.primary.dark};

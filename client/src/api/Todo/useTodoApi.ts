@@ -1,10 +1,11 @@
 import axios, { AxiosResponse } from '@utils/axios';
-import { Todo } from '@utils/types';
+import { Todo, TodoDnD } from '@utils/types';
 
 interface TodoApiHook {
     get: (todoId: string) => Promise<AxiosResponse<Todo>>;
     getAll: () => Promise<Todo[]>;
-    update: (todoId: string) => Promise<AxiosResponse<Todo>>;
+    update: (todo: Todo) => Promise<Todo>;
+    updateAll: (todos: (Todo | TodoDnD)[]) => Promise<AxiosResponse<void>>;
     create: (todo: Todo) => Promise<AxiosResponse<Todo>>;
     remove: (todoId: string) => Promise<AxiosResponse<void>>;
 }
@@ -17,8 +18,12 @@ const useTodoApi = (): TodoApiHook => {
     const get = (todoId: string) => axios
         .get<Todo>(`/api/todos/${todoId}`);
 
-    const update = (todoId: string) => axios
-        .put<Todo>(`/api/todos/${todoId}`);
+    const update = (todo: Todo) => axios
+        .put<Todo>(`/api/todos/${todo.id}`, todo)
+        .then(response => response.data);
+
+    const updateAll = (todos: (Todo | TodoDnD)[]) => axios
+        .put<void>('/api/todos', todos);
 
     const create = (todo: Todo) => axios
         .post<Todo>('/api/todos', todo);
@@ -30,6 +35,7 @@ const useTodoApi = (): TodoApiHook => {
         get,
         getAll,
         update,
+        updateAll,
         create,
         remove,
     };
