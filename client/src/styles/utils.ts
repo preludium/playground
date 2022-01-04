@@ -1,3 +1,5 @@
+import { css } from 'styled-components';
+
 import { RGB } from './theme/types';
 
 export const rem = (px: number) => `${px / 16}rem`;
@@ -48,3 +50,7 @@ export const transparent = (hexColor: string, alpha: number): string => {
     const { red, green, blue } = hex2RGB(hexColor);
     return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 };
+
+export const isHandheldDevice = css`
+    @media (hover: none) and (pointer: coarse)
+`;

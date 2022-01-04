@@ -1,3 +1,5 @@
+import AddIcon from '@mui/icons-material/Add';
+
 import { FunctionComponent, useEffect, useMemo } from 'react';
 
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -6,7 +8,7 @@ import { useImmer } from 'use-immer';
 import useTodoApi from '@api/Todo';
 import { Todo, TodoDnD, TodoTypes } from '@utils/types';
 
-import { Wrapper } from './Dashboard.styles';
+import { StyledFab, Wrapper } from './Dashboard.styles';
 import { TodoMap } from './Dashboard.types';
 import { mapTodosIntoMap } from './Dashboard.utils';
 import TodoContainer from './TodoContainer';
@@ -63,6 +65,9 @@ const Dashboard: FunctionComponent = () => {
     return (
         <Wrapper>
             {renderTodos()}
+            <StyledFab color="primary" aria-label="add">
+                <AddIcon />
+            </StyledFab>
         </Wrapper>
     );
 };

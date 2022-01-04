@@ -33,7 +33,8 @@ export const Body = styled.div<{ maxWidth?: number }>`
     position: relative;
     flex-grow: 1;
     
-    overflow: hidden;
-    max-width: ${p => rem(p.maxWidth ?? 1200)};
+    margin-inline: auto;
+    min-width: ${rem(1200)};
+    max-width: max(${rem(1200)}, 62.5vw);
     padding: ${rem(20)};
 `;

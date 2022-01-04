@@ -16,7 +16,9 @@ const GlobalStyles = createGlobalStyle`
     
     * {
         box-sizing: border-box;
-        transition: ${p => p.theme.transitions.create([ 'background-color', 'border-color', 'color' ])};
+        transition: ${p => p.theme.transitions
+        .create([ 'background-color', 'border-color', 'color' ],
+            { duration: 200 })};
 
         ::selection {
             background-color: ${props => props.theme.palette.primary.main};
