@@ -8,9 +8,7 @@ const useAsyncLayoutEffect = (
     onDestroy?: () => any,
 ): void => {
     useLayoutEffect(() => {
-        (async () => {
-            await effect();
-        })();
+        effect();
         return () => onDestroy?.();
     }, deps);
 };
