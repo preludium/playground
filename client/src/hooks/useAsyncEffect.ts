@@ -8,9 +8,7 @@ const useAsyncEffect = (
     onDestroy?: () => any,
 ): void => {
     useEffect(() => {
-        (async () => {
-            await effect();
-        })();
+        effect();
         return () => onDestroy?.();
     }, deps);
 };
