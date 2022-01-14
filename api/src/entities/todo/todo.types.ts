@@ -9,6 +9,7 @@ export enum TodoTypes {
 export interface Todo extends Document {
     name: string;
     type: TodoTypes;
+    order: number;
     userId: string;
     createdAt: Date;
     updatedAt: Date;
@@ -16,4 +17,4 @@ export interface Todo extends Document {
 
 export type TodoResponse = Omit<Todo, '_id' | 'userId'> & { id?: string };
 
-export type TodoRequest = Pick<Todo, 'name' | 'type'>;
+export type TodoRequest = Pick<Todo, 'name' | 'type' | 'order'>;

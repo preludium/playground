@@ -37,6 +37,25 @@ class TodoService {
                 throw new Error(error.message);
             });
     }
+    
+    public async updateAll(todos: Todo[]) {
+        // const session = await mongoose.startSession()
+        // session.startTransaction();
+        return await Promise.all(todos.map(({ id, ...rest}) =>
+            this.todos.updateOne({ _id: id }, rest)
+        ));
+        // return this.todos.updateOne({}, { "$set": todos }, { multi: true })
+        //     .then(async (result) => {
+                // await session.commitTransaction();
+                // session.endSession();
+                // return result;
+            // })
+            // .catch(async (error) => {
+                // await session.abortTransaction();
+                // session.endSession();
+                // throw new Error(error);
+            // });
+    }
 
     public delete(todoId: string): Promise<MongoDeleteResult> {
         return this.todos.deleteOne({ _id: todoId }).exec();

@@ -3,10 +3,10 @@ import { FunctionComponent } from 'react';
 import { LinkWrapper } from './Link.styles';
 import { LinkProps } from './Link.types';
 
-const Link: FunctionComponent<LinkProps> = (props) => {
+const Link: FunctionComponent<LinkProps> = ({ to, children, ...rest }) => {
     return (
-        <LinkWrapper {...props}>
-            {props.children}
+        <LinkWrapper href={to} {...rest}>
+            {children}
         </LinkWrapper>
     );
 };

@@ -28,7 +28,7 @@ const ErrorPage: FunctionComponent<ErrorPageProps> = (props) => {
                 </ErrorDescription>
                 <Separator thickness={2} />
                 <LinksSection>
-                    <Link href={props.redirectUri}>
+                    <Link to={props.redirectUri}>
                         {props.redirectTitle}
                     </Link>
                 </LinksSection>

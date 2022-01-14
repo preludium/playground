@@ -160,7 +160,7 @@ class AuthController implements Controller {
             .cookie('access_token', accessToken, {
                 httpOnly: true,
                 expires: dayjs()
-                    .add(15, 's')
+                    .add(15, 'm')
                     .toDate()
             })
             .cookie('refresh_token', refreshToken, {

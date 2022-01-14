@@ -11,10 +11,13 @@ const todoSchema: Schema<Todo> = new Schema({
         type: String,
         required: true
     },
+    order: {
+        type: Number,
+        required: true
+    },
     type: {
         type: String,
         enum: TodoTypes,
-        default: TodoTypes.TODO,
         required: true
     }
 }, {

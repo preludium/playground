@@ -29,15 +29,6 @@ tokenSchema.set('toJSON', {
     }
 });
 
-// userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-//     const user = this as User;
-//     return bcrypt.compare(candidatePassword, user.password)
-//         .catch(() => {
-//             logger.error('comparePassword: Passwords are not equal');
-//             return false;
-//         });
-// };
-
 const TokenModel: Model<Token> = model('Token', tokenSchema);
 
 export default TokenModel;

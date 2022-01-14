@@ -6,6 +6,7 @@ import { rem } from 'styles/utils';
 export const ContentWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: center;
     width: 100%;
     padding: ${rem(40)};
     max-width: ${rem(500)};
@@ -20,7 +21,7 @@ export const Title = styled(Typography).attrs({ color: 'textPrimary' })`
     align-items: center;
 `;
 
-export const LoginForm = styled.div`
+export const Form = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;

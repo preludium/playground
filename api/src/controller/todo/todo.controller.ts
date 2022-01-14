@@ -9,7 +9,12 @@ import { validateRequestMiddleware } from '@utils/middlewares';
 import { ApiResponse, Controller } from '@utils/types/controller';
 import { NextFunction, Router } from 'express';
 import StatusCodes from 'http-status-codes';
-import { CreateTodoRequest, DeleteTodoRequest, UpdateTodoRequest } from './types';
+import {
+    CreateTodoRequest,
+    DeleteTodoRequest,
+    UpdateAllTodoRequest,
+    UpdateTodoRequest
+} from './types';
 
 class TodoController implements Controller {
     readonly path = '/todos';
@@ -42,6 +47,11 @@ class TodoController implements Controller {
             `${this.path}/:todoId`,
             //TODO validation
             this.updateTodo.bind(this)
+        )
+        
+        this.router.put(
+            `${this.path}`,
+            this.updateAll.bind(this)
         )
     }
     
@@ -110,6 +120,20 @@ class TodoController implements Controller {
                 res.json(updatedTodo).end();
             })
             .catch(error => {
+                next(new HttpException(StatusCodes.BAD_REQUEST, error.message));
+            });
+    }
+    
+    private updateAll(req: UpdateAllTodoRequest, res: ApiResponse, next: NextFunction) {
+        const user = res.locals.user;
+        const todos = req.body;
+        this.logger.info(`==> Trying to update ${todos.length} todos by ${user.email}`);
+        return this.todoService.updateAll(req.body)
+            .then(() => {
+                this.logger.info('<== Success: all todos updated');
+                res.end();
+            })
+            .catch((error) => {
                 next(new HttpException(StatusCodes.BAD_REQUEST, error.message));
             });
     }

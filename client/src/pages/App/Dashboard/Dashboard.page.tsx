@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 
-import { FunctionComponent, useEffect, useMemo } from 'react';
+import { FunctionComponent, useEffect, useMemo, useState } from 'react';
 
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useImmer } from 'use-immer';
@@ -8,6 +8,7 @@ import { useImmer } from 'use-immer';
 import useTodoApi from '@api/Todo';
 import { Todo, TodoDnD, TodoTypes } from '@utils/types';
 
+import AddTodoModal from './AddTodoModal';
 import { StyledFab, Wrapper } from './Dashboard.styles';
 import { TodoMap } from './Dashboard.types';
 import { mapTodosIntoMap } from './Dashboard.utils';
@@ -25,6 +26,7 @@ const Dashboard: FunctionComponent = () => {
         },
     });
     const [ todos, setTodos ] = useImmer<Todo[]>([]);
+    const [ showModal, setShowModal ] = useState(false);
 
     useEffect(() => {
         if (!data) return;
@@ -53,6 +55,10 @@ const Dashboard: FunctionComponent = () => {
         });
     };
 
+    const handleOpenAddTodoModal = () => {
+        setShowModal(true);
+    };
+
     const renderTodos = () => Object.values(TodoTypes)
         .map(type => (
             <TodoContainer key={getKey(type)}
@@ -65,9 +71,14 @@ const Dashboard: FunctionComponent = () => {
     return (
         <Wrapper>
             {renderTodos()}
-            <StyledFab color="primary" aria-label="add">
+            <StyledFab color="primary" aria-label="add" onClick={handleOpenAddTodoModal}>
                 <AddIcon />
             </StyledFab>
+            <AddTodoModal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                lastTodoOrder={todosMap[TodoTypes.TODO].lastOrder}
+            />
         </Wrapper>
     );
 };
