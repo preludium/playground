@@ -1,0 +1,40 @@
+name: CI
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build-ui:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: UI install
+        run: cd client && yarn install
+
+      - name: UI build
+        run: cd client && yarn build
+
+  build-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: API install
+        run: cd api && yarn install
+
+      - name: API build
+        run: cd api && yarn build
