@@ -28,7 +28,8 @@
             "@styles/*": ["styles/*"],
             "@utils/*": ["utils/*"],
             "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
-        }
+        },
+        "types": ["react/next", "react-dom/next"]
     },
     "include": ["src"],
     "exclude": ["node_modules", "dist"]

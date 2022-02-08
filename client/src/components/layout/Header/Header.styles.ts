@@ -1,8 +1,9 @@
+// import { styled } from '@mui/material/styles';
 import styled from 'styled-components';
 
 import { rem } from '@styles/utils';
 
-export const Wrapper = styled.header`
+export const Wrapper = styled.header(({ theme }) => `
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -13,8 +14,8 @@ export const Wrapper = styled.header`
     height: ${rem(60)};
 
     width: 100%;
-    z-index: ${({ theme }) => theme.zIndex.appBar};
+    z-index: ${theme.zIndex.appBar};
 
-    background-color: ${p => p.theme.layers[2]};
-    box-shadow: ${({ theme }) => theme.shadows[3]};
-`;
+    background-color: ${theme.layers[2]};
+    box-shadow: ${theme.shadows[3]};
+`);

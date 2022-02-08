@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div(({ theme }) => `
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     flex-grow: 1;
-    background-color: ${({ theme }) => theme.palette.background.default};
-    color: ${p => p.theme.layers[12]};
-`;
+    background-color: ${theme.palette.background.default};
+    color: ${theme.layers[12]};
+`);

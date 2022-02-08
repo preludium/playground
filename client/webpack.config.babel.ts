@@ -115,13 +115,13 @@ const configuration = (env, args): Configuration => {
                 'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
             },
             historyApiFallback: true,
-            host: 'localhost',
+            host: '0.0.0.0',
             hot: true,
             open: true,
             port: 4000,
             proxy: [ {
                 context: [ '/api' ],
-                target: 'http://localhost:5000'
+                target: 'http://0.0.0.0:5000'
             } ],
         }
     };

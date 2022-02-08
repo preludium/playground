@@ -62,7 +62,7 @@ class App {
     }
 
     public listen(): void {
-        this.express.listen(this.port, async () => {
+        this.express.listen(this.port, '0.0.0.0', async () => {
             this.logger.info(`App listening on the port ${this.port}`);
         });
     }

@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+    mongo:
+        image: mongo:3
+        restart: always
+        ports:
+            - 27017:27017
+        environment:
+            MONGO_INITDB_DATABASE: todo
+            MONGO_INITDB_ROOT_USERNAME: mongo
+            MONGO_INITDB_ROOT_PASSWORD: mongo
+        volumes:
+            - todo:/data/db
+
+    mongo-express:
+        image: mongo-express
+        restart: always
+        ports:
+            - 5001:8081
+        environment:
+            ME_CONFIG_MONGODB_SERVER: mongo
+            ME_CONFIG_MONGODB_PORT: 27017
+            # ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+            ME_CONFIG_MONGODB_ADMINUSERNAME: mongo
+            ME_CONFIG_MONGODB_ADMINPASSWORD: mongo
+
+    client:
+        image: preludium/todo-client:latest
+        ports:
+            - 4000:4000
+
+    api:
+        image: preludium/todo-api:latest
+        restart: always
+        ports:
+            - 5000:5000
+        links:
+            - mongo
+        depends_on:
+            - mongo
+
+volumes:
+    todo:
+        external: true
+
+networks:
+    default:
+        name: todo
+        attachable: true

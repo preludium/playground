@@ -1,7 +1,5 @@
 import { FunctionComponent, Suspense } from 'react';
-
 import { CookiesProvider } from 'react-cookie';
-
 import { Provider as ReduxProvider } from 'react-redux';
 
 import StylesProvider from '@providers/Styles.provider';

@@ -10,7 +10,7 @@ const refreshPublicKey = fs.readFileSync('refresh.key.pub', 'utf8').trim();
 
 const config: Config = {
     PORT: 5000,
-    DB_URI: 'mongodb://mongo:mongo@localhost:27018/todo?authSource=admin',
+    DB_URI: 'mongodb://mongo:mongo@0.0.0.0:27017/todo?authSource=admin',
     SALT_PASSWORD_ROUNDS: 10,
     ACCESS_TOKEN_VALIDITY: '15m',
     REFRESH_TOKEN_VALIDITY: '7d',

@@ -1,8 +1,9 @@
 import {
     createTheme,
     StyledEngineProvider,
-    ThemeProvider as MuiThemeProvider,
+    // ThemeProvider as MuiThemeProvider,
 } from '@mui/material/styles';
+import { ThemeProvider as MuiThemeProvider } from '@mui/styles';
 
 import { FunctionComponent, useEffect } from 'react';
 
@@ -55,6 +56,9 @@ const StylesProvider: FunctionComponent = (props) => {
 
     const theme = createTheme({
         palette: {
+            primary: {
+                main: '#00ff15',
+            },
             mode: themeCookie === ThemeKey.LIGHT
                 ? ThemeKey.LIGHT
                 : ThemeKey.DARK,
@@ -64,7 +68,6 @@ const StylesProvider: FunctionComponent = (props) => {
                     : '#121212',
             },
         },
-        // @ts-ignore
         layers: themeCookie === ThemeKey.LIGHT
             ? lightLayers
             : darkLayers,
@@ -73,9 +76,7 @@ const StylesProvider: FunctionComponent = (props) => {
     return (
         <StyledEngineProvider injectFirst>
             <MuiThemeProvider theme={theme}>
-                <ThemeProvider
-                    // @ts-ignore
-                    theme={theme}>
+                <ThemeProvider theme={theme}>
                     <GlobalStyles/>
                     {props.children}
                 </ThemeProvider>

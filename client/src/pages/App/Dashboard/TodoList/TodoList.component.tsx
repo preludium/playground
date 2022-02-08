@@ -6,7 +6,6 @@ import useTodoApi from '@api/Todo';
 import { Todo, TodoTypes } from '@utils/types';
 
 import TodoComponent, { DragParams } from './Todo';
-
 interface TodoListProps {
     todos: Todo[];
     type: TodoTypes;

@@ -5,8 +5,8 @@ interface IfProps {
     else?: ReactNode;
 }
 
-const If: FunctionComponent<IfProps> = (props) => {
-    return props.condition ? <>{props.children}</> : <>{props.else}</>;
-};
+const If: FunctionComponent<IfProps> = (props) => props.condition
+    ? <>{props.children}</>
+    : <>{props.else}</>;
 
 export default If;

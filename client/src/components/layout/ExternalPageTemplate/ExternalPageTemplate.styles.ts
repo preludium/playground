@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { rem } from 'styles/utils';
 
-export const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div(({ theme }) => `
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,9 +11,9 @@ export const ContentWrapper = styled.div`
     padding: ${rem(40)};
     max-width: ${rem(500)};
     gap: ${rem(30)};
-    box-shadow: ${({ theme }) => theme.shadows[5]};
-    background-color: ${p => p.theme.layers[2]};
-`;
+    box-shadow: ${theme.shadows[5]};
+    background-color: ${theme.layers[2]};
+`);
 
 export const Title = styled(Typography).attrs({ color: 'textPrimary' })`
     display: flex;

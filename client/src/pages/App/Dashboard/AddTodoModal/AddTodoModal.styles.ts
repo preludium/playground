@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { rem } from '@styles/utils';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div(({ theme }) => `
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -16,9 +16,9 @@ export const Wrapper = styled.div`
     gap: 5rem;
     padding: 2rem;
 
-    background-color: ${p => p.theme.layers[3]};
+    background-color: ${theme.layers[3]};
 
     & > h2 {
         text-align: center;
     }
-`;
+`);
