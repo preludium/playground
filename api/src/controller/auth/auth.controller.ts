@@ -13,21 +13,26 @@ import { TokenBundle } from '@utils/types/token';
 import dayjs from 'dayjs';
 import { NextFunction, Router } from 'express';
 import StatusCodes from 'http-status-codes';
+import passport from 'passport';
+import { Strategy } from 'passport-google-oauth20';
+import config from '@config';
 
-import { LoginUserRequest, RegisterUserRequest } from './types';
+import { LoginUserRequest, OauthUserRequestBody, RegisterUserRequest } from './types';
+import UserService from '@service/user';
 
 class AuthController implements Controller {
     public readonly path = '/auth';
     public readonly router = Router();
-    private logger = Logger.create(__filename);
+    private logger = Logger.create(AuthController.name);
     private authService = new AuthService();
     private tokenService = new TokenService();
+    private userService = new UserService();
 
     constructor() {
         this.initializeRoutes();
     }
 
-    private initializeRoutes() {
+    private async initializeRoutes() {
         this.router.post(
             `${this.path}/login`,
             validateRequestMiddleware(loginUserSchema),
@@ -49,6 +54,42 @@ class AuthController implements Controller {
             `${this.path}/refresh-token`,
             this.refreshToken.bind(this)
         );
+
+        this.router.get(
+            `${this.path}/google`,
+            passport.authenticate('google', { session: false, scope: ['profile', 'email'] }),
+        );
+
+        this.router.get(
+            `${this.path}/google/redirect`,
+            passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+            (req, res) => {
+                res.redirect('/');
+            }
+        );
+
+        passport.use(new Strategy({
+            clientID: config.oauth.google.CLIENT_ID,
+            clientSecret: config.oauth.google.CLIENT_SECRET,
+            callbackURL: config.oauth.google.REDIRECT_URL,
+        }, async (accessToken, refreshToken, params, profile, done) => {
+            const requester: OauthUserRequestBody = {
+                providerUserId: profile.id,
+                provider: profile.provider,
+                email: profile.emails[0].value,
+            };
+            const user = await this.userService.loginOauthUser(requester);
+            debugger;
+            done(null, profile);
+        }));
+
+        passport.serializeUser((user, done) => {
+            done(null, user);
+        });
+
+        passport.deserializeUser((user: any, done) => {
+            done(null, user);
+        });
     }
 
     public authenticate(req: Request, res: Response, next: NextFunction) {

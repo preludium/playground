@@ -76,7 +76,7 @@ const configuration = (env, args): Configuration => {
                 'styled-components': path.resolve(__dirname, 'node_modules/styled-components'),
                 '@mui/styled-engine': '@mui/styled-engine-sc'
             },
-            extensions: [ '.js', '.jsx', '.ts', '.tsx' ]
+            extensions: ['.js', '.jsx', '.ts', '.tsx']
         },
         plugins: [
             new ProgressPlugin(),
@@ -115,14 +115,14 @@ const configuration = (env, args): Configuration => {
                 'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
             },
             historyApiFallback: true,
-            host: '0.0.0.0',
+            host: '127.0.0.1',
             hot: true,
             open: true,
             port: 4000,
-            proxy: [ {
-                context: [ '/api' ],
-                target: 'http://0.0.0.0:5000'
-            } ],
+            proxy: [{
+                context: ['/api'],
+                target: 'http://127.0.0.1:5000'
+            }],
         }
     };
 };

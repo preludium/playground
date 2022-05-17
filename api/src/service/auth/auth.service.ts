@@ -1,6 +1,6 @@
 import { LoginUserRequestBody } from '@controller/auth/types';
 import UserModel, { User, UserRequest, UserResponse } from '@entities/user';
-import { Roles } from '@utils/constants';
+import { Role } from '@utils/constants';
 import Logger from '@utils/logger';
 import { verifyToken } from '@utils/middlewares';
 import { TokenBundle } from '@utils/types/token';
@@ -53,7 +53,7 @@ class AuthService {
     }
 
     public processRegister(user: DocumentDefinition<UserRequest>): Promise<UserResponse> {
-        return UserModel.create({ ...user, roles: [Roles.USER] })
+        return UserModel.create({ ...user, roles: [Role.USER] })
             .catch(error => {
                 if (error.code === 11000) {
                     throw new Error(`User with email ${user.email} already exist`);

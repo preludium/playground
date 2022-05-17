@@ -8,4 +8,11 @@ export interface Config {
     ACCESS_TOKEN_PRIVATE_KEY: string;
     REFRESH_TOKEN_PUBLIC_KEY: string;
     REFRESH_TOKEN_PRIVATE_KEY: string;
+    oauth: {
+        google: {
+            CLIENT_ID: string;
+            CLIENT_SECRET: string;
+            REDIRECT_URL: string;
+        }
+    }
 }

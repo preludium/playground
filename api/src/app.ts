@@ -5,6 +5,7 @@ import express, { Application } from 'express';
 import helmet from 'helmet';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
+import passport from 'passport';
 
 import config from '@config';
 import AuthController from '@controller/auth';
@@ -21,13 +22,13 @@ class App {
         this.express = express();
         this.port = port;
 
-        this.initialiseDatabaseConnection();
-        this.initialiseMiddleware();
-        this.initialiseControllers(controllers);
-        this.initialiseErrorHandling();
+        this.initializeDatabaseConnection();
+        this.initializeMiddleware();
+        this.initializeControllers(controllers);
+        this.initializeErrorHandling();
     }
 
-    private initialiseMiddleware(): void {
+    private initializeMiddleware() {
         this.express.use(helmet());
         this.express.use(cors());
         this.express.use(cookieParser());
@@ -35,9 +36,10 @@ class App {
         this.express.use(express.json());
         this.express.use(express.urlencoded({ extended: true }));
         this.express.use(compression());
+        this.express.use(passport.initialize());
     }
 
-    private initialiseControllers(controllers: Controller[]) {
+    private initializeControllers(controllers: Controller[]) {
         const unprotectedController = new AuthController();
         this.express.use('/api', unprotectedController.router);
         controllers.forEach((controller: Controller) => {
@@ -45,11 +47,11 @@ class App {
         });
     }
 
-    private initialiseErrorHandling() {
+    private initializeErrorHandling() {
         this.express.use(errorMiddleware);
     }
 
-    private initialiseDatabaseConnection() {
+    private initializeDatabaseConnection() {
         this.logger.info('Mongo connecting...');
         mongoose.connect(config.DB_URI)
             .then(() => {
@@ -61,8 +63,8 @@ class App {
             });
     }
 
-    public listen(): void {
-        this.express.listen(this.port, '0.0.0.0', async () => {
+    public listen() {
+        this.express.listen(this.port, () => {
             this.logger.info(`App listening on the port ${this.port}`);
         });
     }

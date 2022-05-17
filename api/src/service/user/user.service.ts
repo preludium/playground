@@ -1,5 +1,6 @@
+import { OauthUserRequestBody } from '@controller/auth/types';
 import UserModel, { User, UserRequest } from '@entities/user';
-import { wrongId } from '@utils/constants';
+import { Role, wrongId } from '@utils/constants';
 
 class UserService {
     public getAllUsers(): Promise<User[]> {
@@ -34,6 +35,27 @@ class UserService {
 
     public deleteById(userId: string) {
         return UserModel.deleteOne({ _id: userId }).exec();
+    }
+
+    public loginOauthUser(oauthUser: OauthUserRequestBody) {
+        return UserModel.findOne({
+            $or: [
+                { email: oauthUser.email },
+                { providerUserId: oauthUser.providerUserId },
+            ],
+        })
+            .then(user => {
+                if (user === null) {
+                    return UserModel.create({
+                        ...oauthUser,
+                        roles: [Role.USER],
+                    });
+                }
+                return user;
+            })
+            .catch(error => {
+                throw new Error(error.message);
+            });
     }
 }
 

@@ -5,7 +5,7 @@ import { Model, model, Schema } from 'mongoose';
 import TodoModel from '../todo';
 import TokenModel, { tokenSchema } from '../token/token.model';
 
-import { User } from './user.types';
+import { OauthProvider, User } from './user.types';
 
 const logger = Logger.create(__filename);
 
@@ -17,11 +17,18 @@ const userSchema: Schema<User> = new Schema({
     },
     password: {
         type: String,
-        required: true
     },
     roles: {
         type: [String],
         required: true
+    },
+    provider: {
+        type: String,
+        enum: OauthProvider,
+    },
+    providerUserId: {
+        type: String,
+        unique: true,
     },
     refreshToken: {
         type: tokenSchema
@@ -34,6 +41,7 @@ const userSchema: Schema<User> = new Schema({
 userSchema.set('toJSON', {
     transform: (_, returnObject) => {
         delete returnObject.password;
+        delete returnObject.googleId;
         returnObject.id = returnObject._id;
         delete returnObject._id;
         return returnObject;
@@ -46,7 +54,9 @@ userSchema.pre('save', async function (next) {
         return next();
     }
     const salt = await bcrypt.genSalt(config.SALT_PASSWORD_ROUNDS);
-    user.password = bcrypt.hashSync(user.password, salt);
+    if (user.password) {
+        user.password = bcrypt.hashSync(user.password, salt);
+    }
     return next();
 });
 
@@ -59,9 +69,12 @@ userSchema.pre('remove', async function (next) {
     next();
 })
 
-userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+userSchema.methods.comparePassword = async function (candidatePassword?: string): Promise<boolean> {
     const user = this as User;
-    return bcrypt.compare(candidatePassword, user.password)
+    if (!user.password || !candidatePassword) {
+        return false;
+    }
+    return bcrypt.compare(candidatePassword, user?.password ?? '')
         .catch(() => {
             logger.error('comparePassword: Passwords are not equal');
             return false;

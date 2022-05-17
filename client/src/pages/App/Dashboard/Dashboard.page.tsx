@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useImmer } from 'use-immer';
 
 import useTodoApi from '@api/Todo';
+import useSocket from '@hooks/useSocket';
 import { Todo, TodoDnD, TodoTypes } from '@utils/types';
 
 import AddTodoModal from './AddTodoModal';
@@ -18,6 +19,7 @@ const getKey = (type: string) => `${type.toLowerCase().replace('_', '-')}-column
 
 const Dashboard: FunctionComponent = () => {
     const { getAll, updateAll } = useTodoApi();
+    const socket = useSocket();
     const { data } = useQuery('todos', getAll);
     const queryClient = useQueryClient();
     const { mutate } = useMutation(updateAll, {
@@ -47,6 +49,7 @@ const Dashboard: FunctionComponent = () => {
         }, []);
         if (!todosToUpdate.length) return;
         mutate(todosToUpdate);
+        socket.emit('move-note', 'dupa');
         setTodos(draft => {
             const wantedTodo = draft.find(todo => todo.id === dropTodo.id);
             if (!wantedTodo) return;

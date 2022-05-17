@@ -10,3 +10,7 @@ export type LoginUserRequest = Request<LoginUserRequestBody, never, never>;
 type UserRequestBody = UserRequest;
 
 export type RegisterUserRequest = Request<UserRequestBody, never, never>;
+
+
+// Oauth
+export type OauthUserRequestBody = Pick<User, 'providerUserId' | 'provider' | 'email'>;

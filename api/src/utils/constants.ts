@@ -4,7 +4,7 @@ export const paramMissingError = 'One or more of the required parameters was mis
 
 export const wrongId = 'Wrong id';
 
-export enum Roles {
+export enum Role {
     USER = 'USER',
     ADMIN = 'ADMIN'
 }
