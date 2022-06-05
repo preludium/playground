@@ -1,11 +1,11 @@
 import { Component, createSignal } from 'solid-js';
 import axios from 'axios';
-import ExternalPageWrapper from '../components/ExternalPageWrapper';
 import { css } from 'solid-styled-components';
 import { useNavigate } from 'solid-app-router';
 import Typography from '@suid/material/Typography';
 import TextField from '@suid/material/TextField';
 import Button from '@suid/material/Button';
+import ExternalPageWrapper from '@components/ExternalPageWrapper';
 
 interface LoginForm {
     email: string;
@@ -33,16 +33,22 @@ const Login: Component = () => {
         <ExternalPageWrapper className={customStyles}>
             <Typography variant="h1">Login</Typography>
             <TextField
-                type='email'
+                type='text'
                 placeholder='Email'
                 value={form().email}
-                onChange={(e) => setForm(prev => ({ ...prev, email: e.currentTarget.value }))}
+                onChange={(e) => {
+                    console.log(`log: ${e.currentTarget.value}`);
+                    setForm(prev => ({ ...prev, email: e.currentTarget.value }))
+                }}
             />
             <TextField
                 type='password'
                 placeholder='Password'
                 value={form().password}
-                onChange={(e) => setForm(prev => ({ ...prev, password: e.currentTarget.value }))}
+                onChange={(e) => {
+                    console.log(`pass: ${e.currentTarget.value}`);
+                    setForm(prev => ({ ...prev, password: e.currentTarget.value }))
+                }}
             />
             <Button
                 onClick={handleLogin}
